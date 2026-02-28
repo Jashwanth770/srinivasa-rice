@@ -80,6 +80,7 @@ if frontend_url:
 
 app.add_middleware(
     CORSMiddleware,
+    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.com|https://.*\.in|https://.*\.net|https://.*\.org|http://localhost:5173",
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
