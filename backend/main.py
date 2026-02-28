@@ -122,8 +122,11 @@ class ProductUpdate(BaseModel):
 
 @app.post("/api/admin/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    if form_data.username == "manocha1973@gmail.com" and form_data.password == "Mancoha":
-        access_token = jwt.encode({"sub": form_data.username}, SECRET_KEY, algorithm=ALGORITHM)
+    username = form_data.username.strip().lower()
+    password = form_data.password.strip()
+    
+    if username == "manocha1973@gmail.com" and password in ["Mancoha", "Manocha"]:
+        access_token = jwt.encode({"sub": "manocha1973@gmail.com"}, SECRET_KEY, algorithm=ALGORITHM)
         return {"access_token": access_token, "token_type": "bearer"}
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
