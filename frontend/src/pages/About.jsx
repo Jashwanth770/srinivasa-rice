@@ -22,6 +22,11 @@ const About = () => {
                         <img
                             src="https://images.unsplash.com/photo-1595089317544-7703bed79ee5?auto=format&fit=crop&q=80"
                             alt="Rice Mill Interior"
+                            className="rounded-lg shadow-xl object-cover h-[400px] w-full hidden"
+                        />
+                        <img
+                            src="https://images.unsplash.com/photo-1500937386664-56d1dfef384c?auto=format&fit=crop&q=80"
+                            alt="Golden Paddy Agricultural Field"
                             className="rounded-lg shadow-xl object-cover h-[400px] w-full"
                         />
                     </div>
