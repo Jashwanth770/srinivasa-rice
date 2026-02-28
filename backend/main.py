@@ -70,6 +70,7 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # Configure CORS for local React development and Production
 origins = [
     "http://localhost:5173", # Local dev default
+    "https://srinivasa-rice.vercel.app", # Production Vercel URL
 ]
 
 # Add production URL if provided via environment
