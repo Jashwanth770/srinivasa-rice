@@ -8,7 +8,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products`);
                 if (response.ok) {
                     const data = await response.json();
                     setProducts(data);
@@ -50,7 +50,7 @@ const Products = () => {
                             <div key={product.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 flex flex-col md:flex-row hover:shadow-lg transition-shadow">
                                 <div className="md:w-2/5 h-48 md:h-auto overflow-hidden">
                                     <img
-                                        src={product.image_url ? `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/${product.image_url}` : defaultImages[index % defaultImages.length]}
+                                        src={product.image_url ? `${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${product.image_url}` : defaultImages[index % defaultImages.length]}
                                         alt={product.variety_name}
                                         className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500"
                                     />

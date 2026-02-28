@@ -15,7 +15,7 @@ const AdminDashboard = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products`);
             if (response.ok) {
                 const data = await response.json();
                 setProducts(data);
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products/add`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products/add`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
 
     const handleSaveUpdate = async (id, varietyName) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products/update/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products/update/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
         if (!isConfirmed) return;
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products/delete/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products/delete/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -127,7 +127,7 @@ const AdminDashboard = () => {
         formData.append('image', file);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products/${id}/image`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products/${id}/image`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -233,7 +233,7 @@ const AdminDashboard = () => {
                                         <td className="py-4 px-6 text-sm text-center w-24">
                                             <div className="relative group w-16 h-16 bg-gray-100 rounded overflow-hidden shadow-inner flex items-center justify-center border border-gray-200 mx-auto">
                                                 {item.image_url ? (
-                                                    <img src={`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/${item.image_url}`} alt={item.variety_name} className="w-full h-full object-cover" />
+                                                    <img src={`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${item.image_url}`} alt={item.variety_name} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <span className="text-gray-400 text-xs">No img</span>
                                                 )}

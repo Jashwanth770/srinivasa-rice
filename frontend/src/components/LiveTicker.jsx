@@ -7,7 +7,7 @@ const LiveTicker = () => {
     useEffect(() => {
         const fetchPrices = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/products`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products`);
                 if (response.ok) {
                     const data = await response.json();
                     // Get all for the ticker
