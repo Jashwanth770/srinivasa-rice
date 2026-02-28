@@ -18,16 +18,16 @@ const About = () => {
 
                 {/* Content Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20">
-                    <div>
+                    <div className="flex flex-col gap-6 w-full">
                         <img
-                            src="https://images.unsplash.com/photo-1595089317544-7703bed79ee5?auto=format&fit=crop&q=80"
-                            alt="Rice Mill Interior"
-                            className="rounded-lg shadow-xl object-cover h-[400px] w-full hidden"
+                            src="/about-mill.png"
+                            alt="Advanced Rice Milling Facility"
+                            className="rounded-lg shadow-xl object-cover h-[250px] w-full"
                         />
                         <img
-                            src="https://images.unsplash.com/photo-1500937386664-56d1dfef384c?auto=format&fit=crop&q=80"
-                            alt="Golden Paddy Agricultural Field"
-                            className="rounded-lg shadow-xl object-cover h-[400px] w-full"
+                            src="/about-canvassing.png"
+                            alt="Rice Canvassing and Quality Inspection"
+                            className="rounded-lg shadow-xl object-cover h-[250px] w-full"
                         />
                     </div>
                     <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
