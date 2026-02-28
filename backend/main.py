@@ -96,7 +96,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        if username is None or username != "admin":
+        if username is None or username != "manocha1973@gmail.com":
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
@@ -121,7 +121,7 @@ class ProductUpdate(BaseModel):
 
 @app.post("/api/admin/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    if form_data.username == "admin" and form_data.password == "admin123":
+    if form_data.username == "manocha1973@gmail.com" and form_data.password == "Mancoha":
         access_token = jwt.encode({"sub": form_data.username}, SECRET_KEY, algorithm=ALGORITHM)
         return {"access_token": access_token, "token_type": "bearer"}
     raise HTTPException(
