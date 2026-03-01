@@ -256,7 +256,7 @@ const AdminDashboard = () => {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {products.map((item) => (
+                                {products.map((item, index) => (
                                     <tr key={item.id} className="hover:bg-gray-50/50">
                                         <td className="py-4 px-6 text-sm text-center w-24">
                                             <div className="relative group w-16 h-16 bg-gray-100 rounded overflow-hidden shadow-inner flex items-center justify-center border border-gray-200 mx-auto">
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
                                                 </label>
                                             </div>
                                         </td>
-                                        <td className="py-4 px-6 text-sm text-gray-500">#{item.id}</td>
+                                        <td className="py-4 px-6 text-sm text-gray-500">#{index + 1}</td>
                                         <td className="py-4 px-6 text-sm font-medium text-gray-900">{item.variety_name}</td>
 
                                         {/* Editable Price Column */}
