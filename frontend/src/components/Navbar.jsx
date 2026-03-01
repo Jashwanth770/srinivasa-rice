@@ -23,8 +23,8 @@ const Navbar = () => {
                         <Link to="/" className="flex items-center gap-2">
                             <Wheat className="h-8 w-8 text-primary" />
                             <div className="flex flex-col">
-                                <span className="font-bold text-xl text-secondary leading-tight">Srinivasa</span>
-                                <span className="text-sm font-semibold text-primary tracking-wider leading-tight">RICE CANVASSING</span>
+                                <span className="font-bold text-xl text-secondary leading-tight">Sri Srinivasa</span>
+                                <span className="text-sm font-semibold text-primary tracking-wider leading-tight"> CANVASSING</span>
                             </div>
                         </Link>
                     </div>
