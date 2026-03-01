@@ -5,7 +5,7 @@ import { LogOut, Trash2, Plus, Edit2, Check, X, ImagePlus } from 'lucide-react';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
-    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '', moisture: '12-14% Max', processing: '100% Sortexed' });
+    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '', moisture: '', processing: '' });
     const [newImage, setNewImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editPrice, setEditPrice] = useState('');
@@ -60,7 +60,7 @@ const AdminDashboard = () => {
 
             if (response.ok) {
                 toast.success(`${newVariety.name} added successfully`);
-                setNewVariety({ name: '', initial_price: '', moisture: '12-14% Max', processing: '100% Sortexed' });
+                setNewVariety({ name: '', initial_price: '', moisture: '', processing: '' });
                 setNewImage(null);
                 // clear file input
                 const fileInput = document.getElementById('new-image-input');
