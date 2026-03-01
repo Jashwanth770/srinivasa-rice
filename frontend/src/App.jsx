@@ -15,12 +15,13 @@ import { Toaster } from 'react-hot-toast';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import WhatsAppWidget from './components/WhatsAppWidget';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" />
-      <div className="min-h-screen flex flex-col font-sans">
+      <div className="min-h-screen flex flex-col font-sans relative">
         <LiveTicker />
         <Navbar />
         <main className="flex-grow">
@@ -41,6 +42,7 @@ function App() {
             } />
           </Routes>
         </main>
+        <WhatsAppWidget />
         <Footer />
       </div>
     </Router>
