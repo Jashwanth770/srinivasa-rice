@@ -142,7 +142,7 @@ const Contact = () => {
                                         onChange={handleChange}
                                         required
                                         className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
-                                        placeholder="9440965368"
+                                        placeholder="Your Whatsapp Number"
                                     />
                                 </div>
                             </div>

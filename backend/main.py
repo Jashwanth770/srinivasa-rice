@@ -25,48 +25,52 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     
     # Migrate DB to add new columns if they don't exist
-    db = next(get_db())
+    from database import SessionLocal
+    db = SessionLocal()
     
     try:
-        db.execute(text("ALTER TABLE rice_prices ADD COLUMN moisture VARCHAR DEFAULT '12-14% Max'"))
-        db.commit()
-    except Exception:
-        db.rollback()
-        
-    try:
-        db.execute(text("ALTER TABLE rice_prices ADD COLUMN processing VARCHAR DEFAULT '100% Sortexed'"))
-        db.commit()
-    except Exception:
-        db.rollback()
-
-    if db.query(RicePrice).count() == 0:
-        seed_data = [
-            ("Sona Masuri Steam", 850.0, 840.0, 1.19, "up"),
-            ("Sona Masuri Raw", 830.0, 830.0, 0.0, "neutral"),
-            ("Sona Masuri Parboiled", 800.0, 810.0, -1.23, "down"),
-            ("Swarna", 650.0, 645.0, 0.78, "up"),
-            ("IR64 5% Broken", 550.0, 560.0, -1.79, "down"),
-            ("IR64 25% Broken", 510.0, 510.0, 0.0, "neutral"),
-            ("BPT 5204", 720.0, 715.0, 0.70, "up"),
-            ("1121 Basmati Sella", 1200.0, 1180.0, 1.69, "up"),
-            ("1121 Basmati Steam", 1250.0, 1260.0, -0.79, "down"),
-            ("1509 Basmati", 1100.0, 1100.0, 0.0, "neutral"),
-        ]
-        
-        current_time = datetime.datetime.now().isoformat()
-        
-        for item in seed_data:
-            new_rice = RicePrice(
-                variety_name=item[0],
-                current_price_mt=item[1],
-                previous_price_mt=item[2],
-                percentage_change=item[3],
-                trend=item[4],
-                last_updated=current_time
-            )
-            db.add(new_rice)
+        try:
+            db.execute(text("ALTER TABLE rice_prices ADD COLUMN moisture VARCHAR DEFAULT '12-14% Max'"))
+            db.commit()
+        except Exception:
+            db.rollback()
             
-        db.commit()
+        try:
+            db.execute(text("ALTER TABLE rice_prices ADD COLUMN processing VARCHAR DEFAULT '100% Sortexed'"))
+            db.commit()
+        except Exception:
+            db.rollback()
+
+        if db.query(RicePrice).count() == 0:
+            seed_data = [
+                ("Sona Masuri Steam", 850.0, 840.0, 1.19, "up"),
+                ("Sona Masuri Raw", 830.0, 830.0, 0.0, "neutral"),
+                ("Sona Masuri Parboiled", 800.0, 810.0, -1.23, "down"),
+                ("Swarna", 650.0, 645.0, 0.78, "up"),
+                ("IR64 5% Broken", 550.0, 560.0, -1.79, "down"),
+                ("IR64 25% Broken", 510.0, 510.0, 0.0, "neutral"),
+                ("BPT 5204", 720.0, 715.0, 0.70, "up"),
+                ("1121 Basmati Sella", 1200.0, 1180.0, 1.69, "up"),
+                ("1121 Basmati Steam", 1250.0, 1260.0, -0.79, "down"),
+                ("1509 Basmati", 1100.0, 1100.0, 0.0, "neutral"),
+            ]
+            
+            current_time = datetime.datetime.now().isoformat()
+            
+            for item in seed_data:
+                new_rice = RicePrice(
+                    variety_name=item[0],
+                    current_price_mt=item[1],
+                    previous_price_mt=item[2],
+                    percentage_change=item[3],
+                    trend=item[4],
+                    last_updated=current_time
+                )
+                db.add(new_rice)
+                
+            db.commit()
+    finally:
+        db.close()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
