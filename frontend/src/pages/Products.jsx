@@ -73,11 +73,11 @@ const Products = () => {
                                         <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm text-gray-600">
                                             <div className="flex flex-col border-b border-gray-200 pb-1">
                                                 <span className="text-xs text-gray-400 uppercase">Moisture</span>
-                                                <span className="font-semibold text-gray-800">12-14% Max</span>
+                                                <span className="font-semibold text-gray-800">{product.moisture || "12-14% Max"}</span>
                                             </div>
                                             <div className="flex flex-col border-b border-gray-200 pb-1">
                                                 <span className="text-xs text-gray-400 uppercase">Processing</span>
-                                                <span className="font-semibold text-gray-800">100% Sortexed</span>
+                                                <span className="font-semibold text-gray-800">{product.processing || "100% Sortexed"}</span>
                                             </div>
                                         </div>
                                     </div>

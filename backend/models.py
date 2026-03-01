@@ -12,3 +12,5 @@ class RicePrice(Base):
     trend = Column(String, nullable=True)
     last_updated = Column(String, nullable=True)
     image_url = Column(String, nullable=True)
+    moisture = Column(String, default="12-14% Max", nullable=True)
+    processing = Column(String, default="100% Sortexed", nullable=True)

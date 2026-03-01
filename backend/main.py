@@ -117,6 +117,8 @@ class ProductAdd(BaseModel):
 class ProductUpdate(BaseModel):
     name: Optional[str] = None
     new_price_mt: float
+    moisture: Optional[str] = None
+    processing: Optional[str] = None
 
 # --- Routes ---
 
@@ -125,7 +127,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     username = form_data.username.strip().lower()
     password = form_data.password.strip()
     
-    if username == "manocha1973@gmail.com" and password in ["Mancoha", "Manocha"]:
+    if username == "manocha1973@gmail.com" and password in ["Manocha", "Manocha"]:
         access_token = jwt.encode({"sub": "manocha1973@gmail.com"}, SECRET_KEY, algorithm=ALGORITHM)
         return {"access_token": access_token, "token_type": "bearer"}
     raise HTTPException(
@@ -149,6 +151,8 @@ async def get_prices(db: Session = Depends(get_db)):
 async def add_product(
     name: str = Form(...),
     initial_price: float = Form(...),
+    moisture: str = Form("12-14% Max"),
+    processing: str = Form("100% Sortexed"),
     image: Optional[UploadFile] = File(None),
     current_user: str = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -175,7 +179,9 @@ async def add_product(
             percentage_change=0.0,
             trend="neutral",
             last_updated=current_time,
-            image_url=image_url
+            image_url=image_url,
+            moisture=moisture,
+            processing=processing
         )
         db.add(new_rice)
         db.commit()
@@ -259,6 +265,12 @@ async def update_product(
         row.percentage_change = round(percentage_change, 2)
         row.trend = trend
         row.last_updated = current_time
+        
+        if product.moisture is not None:
+            row.moisture = product.moisture
+        if product.processing is not None:
+            row.processing = product.processing
+            
         
         db.commit()
         db.refresh(row)

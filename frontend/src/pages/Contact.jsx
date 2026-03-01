@@ -58,7 +58,7 @@ const Contact = () => {
                                 <div>
                                     <h3 className="font-bold text-gray-900 mb-1">Office Location</h3>
                                     <p className="text-gray-600 leading-relaxed">
-                                        Miryalaguda,Nalgonda District, Telangana, India -near kfc restaurant backside-508207
+                                        Miryalaguda,Nalgonda District, Telangana, India-508207
                                     </p>
                                 </div>
                             </div>
@@ -70,10 +70,10 @@ const Contact = () => {
                                 <div>
                                     <h3 className="font-bold text-gray-900 mb-1">Phone / WhatsApp</h3>
                                     <p className="text-gray-600 leading-relaxed">
-                                        9440965368
+                                        +91 9866760028
                                     </p>
                                     <a
-                                        href="https://wa.me/919440965368"
+                                        href="https://wa.me/919866760028"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="mt-2 inline-block text-sm font-semibold text-secondary hover:text-primary transition-colors"

@@ -39,11 +39,11 @@ const Footer = () => {
                         <ul className="space-y-3 text-sm text-gray-300">
                             <li className="flex items-start gap-3">
                                 <MapPin className="h-5 w-5 text-primary shrink-0" />
-                                <span>Miryalaguda,Nalgonda District, Telangana, India -near kfc restaurant backside - 508207</span>
+                                <span>Miryalaguda,Nalgonda District, Telangana, India - 508207</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Phone className="h-5 w-5 text-primary shrink-0" />
-                                <span>9440965368</span>
+                                <span>+91 9866760028</span>
                             </li>
                             <li className="flex items-center gap-3">
                                 <Mail className="h-5 w-5 text-primary shrink-0" />

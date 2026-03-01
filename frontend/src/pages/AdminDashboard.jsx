@@ -5,10 +5,12 @@ import { LogOut, Trash2, Plus, Edit2, Check, X, ImagePlus } from 'lucide-react';
 
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
-    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '' });
+    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '', moisture: '12-14% Max', processing: '100% Sortexed' });
     const [newImage, setNewImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editPrice, setEditPrice] = useState('');
+    const [editMoisture, setEditMoisture] = useState('');
+    const [editProcessing, setEditProcessing] = useState('');
 
     const navigate = useNavigate();
     const token = localStorage.getItem('admin_token');
@@ -41,6 +43,8 @@ const AdminDashboard = () => {
         const formData = new FormData();
         formData.append('name', newVariety.name);
         formData.append('initial_price', parseFloat(newVariety.initial_price));
+        formData.append('moisture', newVariety.moisture || '12-14% Max');
+        formData.append('processing', newVariety.processing || '100% Sortexed');
         if (newImage) {
             formData.append('image', newImage);
         }
@@ -56,7 +60,7 @@ const AdminDashboard = () => {
 
             if (response.ok) {
                 toast.success(`${newVariety.name} added successfully`);
-                setNewVariety({ name: '', initial_price: '' });
+                setNewVariety({ name: '', initial_price: '', moisture: '12-14% Max', processing: '100% Sortexed' });
                 setNewImage(null);
                 // clear file input
                 const fileInput = document.getElementById('new-image-input');
@@ -81,7 +85,9 @@ const AdminDashboard = () => {
                 },
                 body: JSON.stringify({
                     name: varietyName,
-                    new_price_mt: parseFloat(editPrice)
+                    new_price_mt: parseFloat(editPrice),
+                    moisture: editMoisture,
+                    processing: editProcessing
                 })
             });
 
@@ -195,6 +201,26 @@ const AdminDashboard = () => {
                             />
                         </div>
                         <div className="flex-1 w-full md:max-w-xs">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Moisture</label>
+                            <input
+                                type="text"
+                                value={newVariety.moisture}
+                                onChange={(e) => setNewVariety({ ...newVariety, moisture: e.target.value })}
+                                placeholder="12-14% Max"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                            />
+                        </div>
+                        <div className="flex-1 w-full md:max-w-xs">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Processing</label>
+                            <input
+                                type="text"
+                                value={newVariety.processing}
+                                onChange={(e) => setNewVariety({ ...newVariety, processing: e.target.value })}
+                                placeholder="100% Sortexed"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                            />
+                        </div>
+                        <div className="flex-1 w-full md:max-w-xs">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
                             <input
                                 id="new-image-input"
@@ -223,6 +249,8 @@ const AdminDashboard = () => {
                                     <th className="py-3 px-6">ID</th>
                                     <th className="py-3 px-6">Variety Name</th>
                                     <th className="py-3 px-6">Current Price (₹/MT)</th>
+                                    <th className="py-3 px-6">Moisture</th>
+                                    <th className="py-3 px-6">Processing</th>
                                     <th className="py-3 px-6">Last Updated</th>
                                     <th className="py-3 px-6 text-center">Actions</th>
                                 </tr>
@@ -270,6 +298,34 @@ const AdminDashboard = () => {
                                             )}
                                         </td>
 
+                                        {/* Editable Moisture Column */}
+                                        <td className="py-4 px-6 text-sm">
+                                            {editingId === item.id ? (
+                                                <input
+                                                    type="text"
+                                                    value={editMoisture}
+                                                    onChange={(e) => setEditMoisture(e.target.value)}
+                                                    className="w-24 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                                                />
+                                            ) : (
+                                                <span className="text-gray-700">{item.moisture || "12-14% Max"}</span>
+                                            )}
+                                        </td>
+
+                                        {/* Editable Processing Column */}
+                                        <td className="py-4 px-6 text-sm">
+                                            {editingId === item.id ? (
+                                                <input
+                                                    type="text"
+                                                    value={editProcessing}
+                                                    onChange={(e) => setEditProcessing(e.target.value)}
+                                                    className="w-24 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                                                />
+                                            ) : (
+                                                <span className="text-gray-700">{item.processing || "100% Sortexed"}</span>
+                                            )}
+                                        </td>
+
                                         <td className="py-4 px-6 text-sm text-gray-500">
                                             {new Date(item.last_updated).toLocaleString()}
                                         </td>
@@ -296,9 +352,14 @@ const AdminDashboard = () => {
                                                     </>
                                                 ) : (
                                                     <button
-                                                        onClick={() => { setEditingId(item.id); setEditPrice(item.current_price_mt.toString()); }}
+                                                        onClick={() => {
+                                                            setEditingId(item.id);
+                                                            setEditPrice(item.current_price_mt.toString());
+                                                            setEditMoisture(item.moisture || '12-14% Max');
+                                                            setEditProcessing(item.processing || '100% Sortexed');
+                                                        }}
                                                         className="text-blue-600 hover:text-blue-800 bg-blue-50 p-1.5 rounded"
-                                                        title="Edit Price"
+                                                        title="Edit Details"
                                                     >
                                                         <Edit2 className="w-4 h-4" />
                                                     </button>
