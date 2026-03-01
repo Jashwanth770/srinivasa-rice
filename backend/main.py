@@ -1,6 +1,7 @@
 import datetime
 import os
 import jwt
+import asyncio
 from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile, Form
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -74,7 +75,8 @@ def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # App startup logic removed to let Uvicorn bind to PORT instantly
+    # Run database migration in a background thread so Uvicorn can bind to PORT instantly
+    asyncio.create_task(asyncio.to_thread(init_db))
     yield
     # Run at shutdown
 
@@ -322,12 +324,7 @@ async def handle_contact(form_data: ContactForm):
 @app.get("/")
 async def root():
     return {"message": "B2B Website API is running"}
-
 if __name__ == "__main__":
     import uvicorn
-    # Pre-flight the database synchronously before booting the async web server
-    print("Running pre-flight database migration...")
-    init_db()
-    print("Migration complete. Booting server...")
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)
