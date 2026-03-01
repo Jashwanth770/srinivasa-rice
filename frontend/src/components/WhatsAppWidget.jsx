@@ -2,7 +2,7 @@ import React from 'react';
 
 const WhatsAppWidget = () => {
     // Standardize the WhatsApp number (remove non-digits, ensure country code)
-    const phoneNumber = "919876543210";
+    const phoneNumber = "919866760028";
     const message = encodeURIComponent("Hi Sri Srinivasa Canvassing, I am currently on your website and interested in learning more about your wholesale rice export services. Can you provide me with today's live pricing?");
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
