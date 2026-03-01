@@ -57,9 +57,9 @@ const Packaging = () => {
                         </h2>
                         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 space-y-6 text-gray-700">
                             <img
-                                src="https://images.unsplash.com/photo-1586528116311-ad8ed7c1590a?auto=format&fit=crop&q=80"
-                                alt="Container Shipping"
-                                className="w-full h-48 object-cover rounded-lg mb-6"
+                                src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?auto=format&fit=crop&q=80"
+                                alt="Bulk Cargo Export Shipping"
+                                className="w-full h-48 object-cover rounded-lg mb-6 shadow-sm"
                             />
                             <p className="leading-relaxed">
                                 Miryalaguda's strategic location in Telangana provides excellent rail and road connectivity to major eastern coastal ports.
@@ -92,3 +92,4 @@ const Packaging = () => {
 };
 
 export default Packaging;
+ 
