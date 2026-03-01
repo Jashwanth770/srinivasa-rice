@@ -17,7 +17,7 @@ const Footer = () => {
                             </div>
                         </Link>
                         <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                            Premium Sona Masuri & Basmati Exporters from Srinivasa Rice Canvassing. We bridge the gap between quality Indian rice and global markets.
+                            Premium Sona Masuri & Basmati Exporters from Sri Srinivasa Canvassing. We bridge the gap between quality Indian rice and global markets.
                         </p>
                     </div>
 
@@ -64,7 +64,7 @@ const Footer = () => {
                 </div>
 
                 <div className="border-t border-gray-700 mt-10 pt-8 text-center text-sm text-gray-400 flex flex-col items-center gap-2">
-                    <p>&copy; {new Date().getFullYear()} Srinivasa Rice Canvassing. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Sri Srinivasa Canvassing. All rights reserved.</p>
                     <p className="max-w-3xl text-xs text-gray-500 mt-2">
                         Pricing is indicative and subject to daily market fluctuations. Final quality verified by third-party inspection.
                     </p>

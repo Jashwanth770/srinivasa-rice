@@ -28,7 +28,7 @@ const Legal = () => {
                         <h2 className="text-3xl font-bold text-gray-900 mb-6">Privacy Policy</h2>
                         <div className="prose text-gray-600 max-w-none space-y-4">
                             <p>
-                                This Privacy Policy describes how Srinivasa Rice Canvassing collects, uses, and safeguards your business data in accordance with B2B GDPR guidelines.
+                                This Privacy Policy describes how Sri Srinivasa Canvassing collects, uses, and safeguards your business data in accordance with B2B GDPR guidelines.
                             </p>
                             <h3 className="text-xl font-semibold text-gray-800 mt-6 mb-3">Data Collection</h3>
                             <p>
@@ -53,7 +53,7 @@ const Legal = () => {
                                 <li>This website and its content are for informational purposes designed specifically for B2B procurement.</li>
                                 <li>No direct sales or financial transactions occur through this platform.</li>
                                 <li>We reserve the right to review, update, or decline inquiry requests based on stock availability and export regulations.</li>
-                                <li>All intellectual property, logos, and written content belong to Srinivasa Rice Canvassing.</li>
+                                <li>All intellectual property, logos, and written content belong to Sri Srinivasa Canvassing.</li>
                             </ul>
                         </div>
                     </section>

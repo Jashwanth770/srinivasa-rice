@@ -32,7 +32,7 @@ const About = () => {
                     </div>
                     <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
                         <p>
-                            Located in Miryalaguda, Telangana—the renowned hub of paddy cultivation and milling in India—<span className="font-bold text-secondary">Srinivasa Rice Canvassing</span> operates at the very center of the rice trade ecosystem.
+                            Located in Miryalaguda, Telangana—the renowned hub of paddy cultivation and milling in India—<span className="font-bold text-secondary">Sri Srinivasa Canvassing</span> operates at the very center of the rice trade ecosystem.
                         </p>
                         <p>
                             As experienced canvassers, we possess deep-rooted relationships with over 100+ state-of-the-art rice mills. We act as a trusted bridge, ensuring that international merchants receive exactly what they specify, from premium Sona Masuri to aromatic Basmati.

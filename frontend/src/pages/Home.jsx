@@ -15,7 +15,7 @@ const Home = () => {
 
                 <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-48 text-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6 animate-fade-in-up">
-                        Premium <span className="text-primary">Sona Masuri & Basmati</span> <br /> Sourced Directly from Telangana's Finest Mills
+                        Premium <span className="text-primary">Sona Masuri </span> <br /> Sourced Directly from Telangana's Finest Mills
                     </h1>
                     <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-200 mb-10">
                         Sourcing the finest quality rice from the heartland of India to global markets. Trusted canvassers and merchant exporters.
@@ -64,7 +64,7 @@ const Home = () => {
                                 <Box className="h-10 w-10 text-primary group-hover:text-white" />
                             </div>
                             <h3 className="text-xl font-bold mb-3 text-gray-900">Custom Packaging</h3>
-                            <p className="text-text-muted">Available in 25kg, 50kg PP bags and customizable bulk packaging tailored to importer requirements.</p>
+                            <p className="text-text-muted">Available in 26kg, 50kg PP bags and customizable bulk packaging tailored to importer requirements.</p>
                         </div>
                     </div>
                 </div>
