@@ -386,6 +386,103 @@ const AdminDashboard = () => {
                         </div>
                     </>
                 )}
+
+                {activeTab === 'leads' && (
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mb-8">
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                            <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                                <Users className="w-5 h-5 text-secondary" /> Prospect CRM
+                            </h2>
+                            <button
+                                onClick={() => {
+                                    const numbers = leads.map(l => l.whatsapp).filter(Boolean).join(', ');
+                                    if (numbers) {
+                                        navigator.clipboard.writeText(numbers);
+                                        toast.success("Phone numbers copied to clipboard! Paste into WhatsApp Broadcast.");
+                                    } else {
+                                        toast.error("No numbers to copy");
+                                    }
+                                }}
+                                className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 border border-green-200 rounded-md text-sm font-medium hover:bg-green-100 transition-colors"
+                            >
+                                <MessageSquareShare className="w-4 h-4" /> Copy All Numbers
+                            </button>
+                        </div>
+
+                        {/* Broadcast Alert Generator */}
+                        <div className="p-6 bg-white border-b border-gray-100 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="lg:col-span-1">
+                                <h3 className="text-md font-semibold text-gray-800 mb-2">WhatsApp Market Alert</h3>
+                                <p className="text-sm text-gray-500 mb-4">Generate a pre-formatted message with today's live prices to blast to your buyers.</p>
+                                <button
+                                    onClick={generateBroadcast}
+                                    className="w-full px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-md text-sm font-medium transition-colors shadow-sm"
+                                >
+                                    Generate Live Prices Alert
+                                </button>
+                            </div>
+                            <div className="lg:col-span-2 relative">
+                                <textarea
+                                    value={broadcastMessage}
+                                    onChange={(e) => setBroadcastMessage(e.target.value)}
+                                    placeholder="Click 'Generate Live Prices Alert' to build your message..."
+                                    className="w-full h-32 p-3 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none bg-gray-50"
+                                />
+                                {broadcastMessage && (
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(broadcastMessage);
+                                            toast.success("Message copied! Ready to paste.");
+                                        }}
+                                        className="absolute bottom-4 right-4 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded hover:bg-gray-700 transition-colors"
+                                    >
+                                        Copy Message
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                                        <th className="py-3 px-6">Date</th>
+                                        <th className="py-3 px-6">Buyer Name</th>
+                                        <th className="py-3 px-6">Company</th>
+                                        <th className="py-3 px-6">WhatsApp</th>
+                                        <th className="py-3 px-6">Inquiry / Requested Spec</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {leads.map((lead) => (
+                                        <tr key={lead.id} className="hover:bg-gray-50/50 transition-colors">
+                                            <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                                                {new Date(lead.created_at).toLocaleDateString()}
+                                            </td>
+                                            <td className="py-4 px-6 text-sm font-medium text-gray-900">{lead.name}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600">{lead.company || '-'}</td>
+                                            <td className="py-4 px-6 text-sm">
+                                                <a href={`https://wa.me/${lead.whatsapp.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 font-medium flex items-center gap-1">
+                                                    {lead.whatsapp}
+                                                </a>
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 max-w-xs truncate" title={lead.inquiry_text}>
+                                                {lead.inquiry_text}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {leads.length === 0 && (
+                                        <tr>
+                                            <td colSpan="5" className="py-12 text-center text-gray-500">
+                                                No inquiries yet. When a buyer submits a Contact Request, it will appear here.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
