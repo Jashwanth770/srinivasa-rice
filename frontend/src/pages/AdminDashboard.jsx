@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { LogOut, Trash2, Plus, Edit2, Check, X, ImagePlus } from 'lucide-react';
+import { LogOut, Trash2, Plus, Edit2, Check, X, ImagePlus, Users, MessageSquareShare } from 'lucide-react';
 
 const AdminDashboard = () => {
+    const [activeTab, setActiveTab] = useState('inventory');
+    const [leads, setLeads] = useState([]);
+    const [broadcastMessage, setBroadcastMessage] = useState('');
     const [products, setProducts] = useState([]);
-    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '', moisture: '', processing: '' });
+    const [newVariety, setNewVariety] = useState({ name: '', initial_price: '' });
     const [newImage, setNewImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editPrice, setEditPrice] = useState('');
-    const [editMoisture, setEditMoisture] = useState('');
-    const [editProcessing, setEditProcessing] = useState('');
 
     const navigate = useNavigate();
     const token = localStorage.getItem('admin_token');
@@ -27,9 +28,36 @@ const AdminDashboard = () => {
         }
     };
 
+    const fetchLeads = async () => {
+        try {
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/leads`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setLeads(data);
+            }
+        } catch (error) {
+            console.error('Failed to load leads');
+        }
+    };
+
     useEffect(() => {
         fetchProducts();
+        fetchLeads();
     }, []);
+
+    const generateBroadcast = () => {
+        const date = new Date().toLocaleDateString('en-IN');
+        let msg = `🚨 *Sri Srinivasa Canvassing* 🚨\n📍 Miryalaguda Live Market Rates\n📅 Date: ${date}\n\n`;
+
+        products.forEach(p => {
+            msg += `🌾 *${p.variety_name}*: ₹${p.current_price_mt}/MT\n`;
+        });
+
+        msg += `\nPrices are indicative & subject to immediate change based on mill availability.\n\nReply to lock your indent!`;
+        setBroadcastMessage(msg);
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('admin_token');
@@ -43,8 +71,6 @@ const AdminDashboard = () => {
         const formData = new FormData();
         formData.append('name', newVariety.name);
         formData.append('initial_price', parseFloat(newVariety.initial_price));
-        formData.append('moisture', newVariety.moisture || '12-14% Max');
-        formData.append('processing', newVariety.processing || '100% Sortexed');
         if (newImage) {
             formData.append('image', newImage);
         }
@@ -60,7 +86,7 @@ const AdminDashboard = () => {
 
             if (response.ok) {
                 toast.success(`${newVariety.name} added successfully`);
-                setNewVariety({ name: '', initial_price: '', moisture: '', processing: '' });
+                setNewVariety({ name: '', initial_price: '' });
                 setNewImage(null);
                 // clear file input
                 const fileInput = document.getElementById('new-image-input');
@@ -85,9 +111,7 @@ const AdminDashboard = () => {
                 },
                 body: JSON.stringify({
                     name: varietyName,
-                    new_price_mt: parseFloat(editPrice),
-                    moisture: editMoisture,
-                    processing: editProcessing
+                    new_price_mt: parseFloat(editPrice)
                 })
             });
 
@@ -160,8 +184,8 @@ const AdminDashboard = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-                        <p className="text-sm text-gray-500 mt-1">Manage live market rates and rice varieties.</p>
+                        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                        <p className="text-sm text-gray-500 mt-1">Manage live market rates and global inquiries.</p>
                     </div>
                     <button
                         onClick={handleLogout}
@@ -171,224 +195,197 @@ const AdminDashboard = () => {
                     </button>
                 </div>
 
-                {/* Add Product Section */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-                    <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <Plus className="w-5 h-5 text-primary" /> Add New Variety
-                    </h2>
-                    <form onSubmit={handleAddProduct} className="flex flex-col md:flex-row gap-4 items-end">
-                        <div className="flex-1 w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Variety Name</label>
-                            <input
-                                type="text"
-                                required
-                                value={newVariety.name}
-                                onChange={(e) => setNewVariety({ ...newVariety, name: e.target.value })}
-                                placeholder="e.g. Broken Rice 100%"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                            />
-                        </div>
-                        <div className="flex-1 w-full md:max-w-xs">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Current Price (₹/MT)</label>
-                            <input
-                                type="number"
-                                step="0.01"
-                                required
-                                value={newVariety.initial_price}
-                                onChange={(e) => setNewVariety({ ...newVariety, initial_price: e.target.value })}
-                                placeholder="0.00"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                            />
-                        </div>
-                        <div className="flex-1 w-full md:max-w-xs">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Moisture</label>
-                            <input
-                                type="text"
-                                value={newVariety.moisture}
-                                onChange={(e) => setNewVariety({ ...newVariety, moisture: e.target.value })}
-                                placeholder="12-14% Max"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                            />
-                        </div>
-                        <div className="flex-1 w-full md:max-w-xs">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Processing</label>
-                            <input
-                                type="text"
-                                value={newVariety.processing}
-                                onChange={(e) => setNewVariety({ ...newVariety, processing: e.target.value })}
-                                placeholder="100% Sortexed"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-                            />
-                        </div>
-                        <div className="flex-1 w-full md:max-w-xs">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
-                            <input
-                                id="new-image-input"
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => setNewImage(e.target.files[0])}
-                                className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full md:w-auto px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-colors text-sm h-[42px]"
-                        >
-                            Add Product
-                        </button>
-                    </form>
+                {/* Tabs Navigation */}
+                <div className="flex border-b border-gray-200 mb-8 space-x-8">
+                    <button
+                        onClick={() => setActiveTab('inventory')}
+                        className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'inventory'
+                            ? 'border-primary text-secondary'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                    >
+                        <Plus className="w-4 h-4" /> Live Inventory
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('leads')}
+                        className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center gap-2 ${activeTab === 'leads'
+                            ? 'border-primary text-secondary'
+                            : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                            }`}
+                    >
+                        <Users className="w-4 h-4" /> Inquiries & CRM ({leads.length})
+                    </button>
                 </div>
 
-                {/* Data Table */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
-                            <thead>
-                                <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
-                                    <th className="py-3 px-6">Image</th>
-                                    <th className="py-3 px-6">ID</th>
-                                    <th className="py-3 px-6">Variety Name</th>
-                                    <th className="py-3 px-6">Current Price (₹/MT)</th>
-                                    <th className="py-3 px-6">Moisture</th>
-                                    <th className="py-3 px-6">Processing</th>
-                                    <th className="py-3 px-6">Last Updated</th>
-                                    <th className="py-3 px-6 text-center">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-100">
-                                {products.map((item, index) => (
-                                    <tr key={item.id} className="hover:bg-gray-50/50">
-                                        <td className="py-4 px-6 text-sm text-center w-24">
-                                            <div className="relative group w-16 h-16 bg-gray-100 rounded overflow-hidden shadow-inner flex items-center justify-center border border-gray-200 mx-auto">
-                                                {item.image_url ? (
-                                                    <img src={`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${item.image_url}`} alt={item.variety_name} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <span className="text-gray-400 text-xs">No img</span>
-                                                )}
+                {activeTab === 'inventory' && (
+                    <>
+                        {/* Add Product Section */}
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+                            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                                <Plus className="w-5 h-5 text-primary" /> Add New Variety
+                            </h2>
+                            <form onSubmit={handleAddProduct} className="flex flex-col md:flex-row gap-4 items-end">
+                                <div className="flex-1 w-full">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Variety Name</label>
+                                    <input
+                                        type="text"
+                                        required
+                                        value={newVariety.name}
+                                        onChange={(e) => setNewVariety({ ...newVariety, name: e.target.value })}
+                                        placeholder="e.g. Broken Rice 100%"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                    />
+                                </div>
+                                <div className="flex-1 w-full md:max-w-xs">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Current Price (₹/MT)</label>
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        required
+                                        value={newVariety.initial_price}
+                                        onChange={(e) => setNewVariety({ ...newVariety, initial_price: e.target.value })}
+                                        placeholder="0.00"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                                    />
+                                </div>
+                                <div className="flex-1 w-full md:max-w-xs">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
+                                    <input
+                                        id="new-image-input"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setNewImage(e.target.files[0])}
+                                        className="w-full px-3 py-1.5 border border-gray-300 rounded-md text-sm file:mr-4 file:py-1 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full md:w-auto px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-colors text-sm h-[42px]"
+                                >
+                                    Add Product
+                                </button>
+                            </form>
+                        </div>
 
-                                                {/* Upload Overlay */}
-                                                <label className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity">
-                                                    <ImagePlus className="w-5 h-5 mb-1" />
-                                                    <span className="text-[10px] font-medium leading-tight">Upload</span>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="hidden"
-                                                        onChange={(e) => handleImageUpload(item.id, e.target.files[0])}
-                                                    />
-                                                </label>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 px-6 text-sm text-gray-500">#{index + 1}</td>
-                                        <td className="py-4 px-6 text-sm font-medium text-gray-900">{item.variety_name}</td>
+                        {/* Data Table */}
+                        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-wider text-gray-500 font-semibold">
+                                            <th className="py-3 px-6">Image</th>
+                                            <th className="py-3 px-6">ID</th>
+                                            <th className="py-3 px-6">Variety Name</th>
+                                            <th className="py-3 px-6">Current Price (₹/MT)</th>
+                                            <th className="py-3 px-6">Last Updated</th>
+                                            <th className="py-3 px-6 text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {products.map((item, index) => (
+                                            <tr key={item.id} className="hover:bg-gray-50/50">
+                                                <td className="py-4 px-6 text-sm text-center w-24">
+                                                    <div className="relative group w-16 h-16 bg-gray-100 rounded overflow-hidden shadow-inner flex items-center justify-center border border-gray-200 mx-auto">
+                                                        {item.image_url ? (
+                                                            <img src={`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${item.image_url}`} alt={item.variety_name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <span className="text-gray-400 text-xs">No img</span>
+                                                        )}
 
-                                        {/* Editable Price Column */}
-                                        <td className="py-4 px-6 text-sm">
-                                            {editingId === item.id ? (
-                                                <input
-                                                    type="number"
-                                                    step="0.01"
-                                                    value={editPrice}
-                                                    onChange={(e) => setEditPrice(e.target.value)}
-                                                    className="w-32 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
-                                                    autoFocus
-                                                />
-                                            ) : (
-                                                <span className="font-semibold text-gray-700">₹{item.current_price_mt.toFixed(2)}</span>
-                                            )}
-                                        </td>
+                                                        {/* Upload Overlay */}
+                                                        <label className="absolute inset-0 bg-black/50 text-white opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity">
+                                                            <ImagePlus className="w-5 h-5 mb-1" />
+                                                            <span className="text-[10px] font-medium leading-tight">Upload</span>
+                                                            <input
+                                                                type="file"
+                                                                accept="image/*"
+                                                                className="hidden"
+                                                                onChange={(e) => handleImageUpload(item.id, e.target.files[0])}
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6 text-sm text-gray-500">#{index + 1}</td>
+                                                <td className="py-4 px-6 text-sm font-medium text-gray-900">{item.variety_name}</td>
 
-                                        {/* Editable Moisture Column */}
-                                        <td className="py-4 px-6 text-sm">
-                                            {editingId === item.id ? (
-                                                <input
-                                                    type="text"
-                                                    value={editMoisture}
-                                                    onChange={(e) => setEditMoisture(e.target.value)}
-                                                    className="w-24 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
-                                                />
-                                            ) : (
-                                                <span className="text-gray-700">{item.moisture || "12-14% Max"}</span>
-                                            )}
-                                        </td>
+                                                {/* Editable Price Column */}
+                                                <td className="py-4 px-6 text-sm">
+                                                    {editingId === item.id ? (
+                                                        <input
+                                                            type="number"
+                                                            step="0.01"
+                                                            value={editPrice}
+                                                            onChange={(e) => setEditPrice(e.target.value)}
+                                                            className="w-32 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
+                                                            autoFocus
+                                                        />
+                                                    ) : (
+                                                        <span className="font-semibold text-gray-700">₹{item.current_price_mt.toFixed(2)}</span>
+                                                    )}
+                                                </td>
 
-                                        {/* Editable Processing Column */}
-                                        <td className="py-4 px-6 text-sm">
-                                            {editingId === item.id ? (
-                                                <input
-                                                    type="text"
-                                                    value={editProcessing}
-                                                    onChange={(e) => setEditProcessing(e.target.value)}
-                                                    className="w-24 px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
-                                                />
-                                            ) : (
-                                                <span className="text-gray-700">{item.processing || "100% Sortexed"}</span>
-                                            )}
-                                        </td>
+                                                <td className="py-4 px-6 text-sm text-gray-500">
+                                                    {new Date(item.last_updated).toLocaleString()}
+                                                </td>
 
-                                        <td className="py-4 px-6 text-sm text-gray-500">
-                                            {new Date(item.last_updated).toLocaleString()}
-                                        </td>
+                                                {/* Actions Column */}
+                                                <td className="py-4 px-6 text-center">
+                                                    <div className="flex justify-center items-center gap-3">
+                                                        {editingId === item.id ? (
+                                                            <>
+                                                                <button
+                                                                    onClick={() => handleSaveUpdate(item.id, item.variety_name)}
+                                                                    className="text-green-600 hover:text-green-800 bg-green-50 p-1.5 rounded"
+                                                                    title="Save"
+                                                                >
+                                                                    <Check className="w-4 h-4" />
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => setEditingId(null)}
+                                                                    className="text-gray-500 hover:text-gray-700 bg-gray-100 p-1.5 rounded"
+                                                                    title="Cancel"
+                                                                >
+                                                                    <X className="w-4 h-4" />
+                                                                </button>
+                                                            </>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => {
+                                                                    setEditingId(item.id);
+                                                                    setEditPrice(item.current_price_mt.toString());
+                                                                }}
+                                                                className="text-blue-600 hover:text-blue-800 bg-blue-50 p-1.5 rounded"
+                                                                title="Edit Details"
+                                                            >
+                                                                <Edit2 className="w-4 h-4" />
+                                                            </button>
+                                                        )}
 
-                                        {/* Actions Column */}
-                                        <td className="py-4 px-6 text-center">
-                                            <div className="flex justify-center items-center gap-3">
-                                                {editingId === item.id ? (
-                                                    <>
                                                         <button
-                                                            onClick={() => handleSaveUpdate(item.id, item.variety_name)}
-                                                            className="text-green-600 hover:text-green-800 bg-green-50 p-1.5 rounded"
-                                                            title="Save"
+                                                            onClick={() => handleDelete(item.id, item.variety_name)}
+                                                            className="text-red-600 hover:text-red-800 bg-red-50 p-1.5 rounded transition-colors"
+                                                            title="Delete Variety"
                                                         >
-                                                            <Check className="w-4 h-4" />
+                                                            <Trash2 className="w-4 h-4" />
                                                         </button>
-                                                        <button
-                                                            onClick={() => setEditingId(null)}
-                                                            className="text-gray-500 hover:text-gray-700 bg-gray-100 p-1.5 rounded"
-                                                            title="Cancel"
-                                                        >
-                                                            <X className="w-4 h-4" />
-                                                        </button>
-                                                    </>
-                                                ) : (
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditingId(item.id);
-                                                            setEditPrice(item.current_price_mt.toString());
-                                                            setEditMoisture(item.moisture || '12-14% Max');
-                                                            setEditProcessing(item.processing || '100% Sortexed');
-                                                        }}
-                                                        className="text-blue-600 hover:text-blue-800 bg-blue-50 p-1.5 rounded"
-                                                        title="Edit Details"
-                                                    >
-                                                        <Edit2 className="w-4 h-4" />
-                                                    </button>
-                                                )}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
 
-                                                <button
-                                                    onClick={() => handleDelete(item.id, item.variety_name)}
-                                                    className="text-red-600 hover:text-red-800 bg-red-50 p-1.5 rounded transition-colors"
-                                                    title="Delete Variety"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
-
-                                {products.length === 0 && (
-                                    <tr>
-                                        <td colSpan="6" className="py-8 text-center text-gray-500">
-                                            No products found. Add a variety above.
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                        {products.length === 0 && (
+                                            <tr>
+                                                <td colSpan="6" className="py-8 text-center text-gray-500">
+                                                    No products found. Add a variety above.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                </div>
-
+                )}
             </div>
         </div>
     );

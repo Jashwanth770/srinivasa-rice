@@ -65,23 +65,6 @@ const Products = () => {
                                         </p>
                                     </div>
 
-                                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                                        <div className="flex justify-between items-center mb-3">
-                                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Live Estimate</h4>
-                                            <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded">₹{product.current_price_mt.toFixed(2)} / MT</span>
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm text-gray-600">
-                                            <div className="flex flex-col border-b border-gray-200 pb-1">
-                                                <span className="text-xs text-gray-400 uppercase">Moisture</span>
-                                                <span className="font-semibold text-gray-800">{product.moisture || "12-14% Max"}</span>
-                                            </div>
-                                            <div className="flex flex-col border-b border-gray-200 pb-1">
-                                                <span className="text-xs text-gray-400 uppercase">Processing</span>
-                                                <span className="font-semibold text-gray-800">{product.processing || "100% Sortexed"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                     <Link
                                         to="/contact"
                                         className="mt-auto block text-center w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-2.5 rounded transition-colors text-sm"

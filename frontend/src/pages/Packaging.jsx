@@ -29,7 +29,7 @@ const Packaging = () => {
                                     <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
                                     <div>
                                         <strong className="block text-gray-900">PP Bags (Polypropylene)</strong>
-                                        <span>25kg and 50kg standard bulk bags. Highly durable and moisture resistant.</span>
+                                        <span>26kg and 50kg standard bulk bags. Highly durable and moisture resistant.</span>
                                     </div>
                                 </li>
                                 <li className="flex items-start gap-3">

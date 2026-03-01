@@ -1,7 +1,6 @@
 import datetime
 import os
 import jwt
-import asyncio
 from fastapi import FastAPI, HTTPException, Depends, status, File, UploadFile, Form
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,7 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text
 
 from database import engine, Base, get_db
-from models import RicePrice
+from models import RicePrice, Lead
 
 SECRET_KEY = os.getenv("SECRET_KEY", "super_secret_key_change_in_production")
 ALGORITHM = "HS256"
@@ -75,8 +74,8 @@ def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Run database migration in a background thread so Uvicorn can bind to PORT instantly
-    asyncio.create_task(asyncio.to_thread(init_db))
+    # Run at startup
+    init_db()
     yield
     # Run at shutdown
 
@@ -315,15 +314,35 @@ async def delete_product(
 
 
 @app.post("/api/contact")
-async def handle_contact(form_data: ContactForm):
-    print(f"Received inquiry from {form_data.name} at {form_data.company}")
-    print(f"WhatsApp: {form_data.whatsapp}")
-    print(f"Details: {form_data.inquiry}")
-    return {"message": "Inquiry received successfully. Our team will contact you shortly via WhatsApp."}
+async def handle_contact(form_data: ContactForm, db: Session = Depends(get_db)):
+    try:
+        new_lead = Lead(
+            name=form_data.name,
+            company=form_data.company,
+            whatsapp=form_data.whatsapp,
+            inquiry_text=form_data.inquiry,
+            created_at=datetime.datetime.now().isoformat()
+        )
+        db.add(new_lead)
+        db.commit()
+        return {"message": "Inquiry received successfully. Our team will contact you shortly via WhatsApp."}
+    except Exception as e:
+        db.rollback()
+        print(f"Failed to save lead: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save inquiry")
+
+@app.get("/api/leads")
+async def get_leads(
+    current_user: str = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    leads = db.query(Lead).order_by(Lead.id.desc()).all()
+    return leads
 
 @app.get("/")
 async def root():
     return {"message": "B2B Website API is running"}
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))

@@ -14,3 +14,13 @@ class RicePrice(Base):
     image_url = Column(String, nullable=True)
     moisture = Column(String, default="12-14% Max", nullable=True)
     processing = Column(String, default="100% Sortexed", nullable=True)
+
+class Lead(Base):
+    __tablename__ = "leads"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    company = Column(String, nullable=False)
+    whatsapp = Column(String, nullable=False)
+    inquiry_text = Column(String, nullable=False)
+    created_at = Column(String, nullable=True)
