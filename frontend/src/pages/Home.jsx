@@ -96,7 +96,7 @@ const Home = () => {
                             placeholder="Your Name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full md:w-64 px-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400"
+                            className="w-full md:w-64 px-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400/60 placeholder:italic transition-all"
                         />
                         <div className="relative w-full md:w-80">
                             <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-bold border-r pr-2 border-gray-300">
@@ -108,7 +108,7 @@ const Home = () => {
                                 placeholder="WhatsApp Number"
                                 value={whatsapp}
                                 onChange={(e) => setWhatsapp(e.target.value)}
-                                className="w-full pl-16 pr-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400"
+                                className="w-full pl-16 pr-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400/60 placeholder:italic transition-all"
                             />
                         </div>
                         <button
