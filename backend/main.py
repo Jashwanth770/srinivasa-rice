@@ -74,8 +74,7 @@ def init_db():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Run at startup
-    init_db()
+    # App startup logic removed to let Uvicorn bind to PORT instantly
     yield
     # Run at shutdown
 
@@ -326,5 +325,9 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
+    # Pre-flight the database synchronously before booting the async web server
+    print("Running pre-flight database migration...")
+    init_db()
+    print("Migration complete. Booting server...")
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)

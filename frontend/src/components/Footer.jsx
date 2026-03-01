@@ -13,11 +13,11 @@ const Footer = () => {
                             <Wheat className="h-8 w-8 text-primary" />
                             <div className="flex flex-col">
                                 <span className="font-bold text-xl leading-tight">Sri Srinivasa</span>
-                                <span className="text-sm font-semibold text-primary tracking-wider leading-tight">RICE CANVASSING</span>
+                                <span className="text-sm font-semibold text-primary tracking-wider leading-tight">CANVASSING</span>
                             </div>
                         </Link>
                         <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                            Premium Sona Masuri & Basmati Exporters from Sri Srinivasa Canvassing. We bridge the gap between quality Indian rice and global markets.
+                            Premium Sona Masuri Exporters from Sri Srinivasa Canvassing. We bridge the gap between quality Indian rice and global markets.
                         </p>
                     </div>
 
