@@ -10,6 +10,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import text
 
 from database import engine, Base, get_db
 from models import RicePrice
@@ -23,8 +24,21 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/login")
 def init_db():
     Base.metadata.create_all(bind=engine)
     
-    # Seed data if table is empty
+    # Migrate DB to add new columns if they don't exist
     db = next(get_db())
+    
+    try:
+        db.execute(text("ALTER TABLE rice_prices ADD COLUMN moisture VARCHAR DEFAULT '12-14% Max'"))
+        db.commit()
+    except Exception:
+        db.rollback()
+        
+    try:
+        db.execute(text("ALTER TABLE rice_prices ADD COLUMN processing VARCHAR DEFAULT '100% Sortexed'"))
+        db.commit()
+    except Exception:
+        db.rollback()
+
     if db.query(RicePrice).count() == 0:
         seed_data = [
             ("Sona Masuri Steam", 850.0, 840.0, 1.19, "up"),
