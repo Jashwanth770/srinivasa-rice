@@ -22,7 +22,7 @@ const Home = () => {
                     name: name,
                     company: "Price Alert Subscriber",
                     whatsapp: whatsapp,
-                    inquiry_text: "🚨 AUTOMATED LEAD: Subscribed to Daily WhatsApp Price Alerts"
+                    inquiry: "🚨 AUTOMATED LEAD: Subscribed to Daily WhatsApp Price Alerts"
                 })
             });
 
