@@ -65,6 +65,13 @@ const Products = () => {
                                         </p>
                                     </div>
 
+                                    <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                                        <div className="flex justify-between items-center">
+                                            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider">Live Estimate</h4>
+                                            <span className="text-sm font-bold text-green-600 bg-green-50 px-2 py-1 rounded border border-green-100">₹{product.current_price_mt.toFixed(2)} / MT</span>
+                                        </div>
+                                    </div>
+
                                     <Link
                                         to="/contact"
                                         className="mt-auto block text-center w-full bg-secondary hover:bg-secondary-dark text-white font-semibold py-2.5 rounded transition-colors text-sm"
