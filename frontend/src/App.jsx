@@ -16,12 +16,14 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import WhatsAppWidget from './components/WhatsAppWidget';
+import CustomCursor from './components/CustomCursor';
 
 function App() {
   return (
     <Router>
       <Toaster position="top-right" />
-      <div className="min-h-screen flex flex-col font-sans relative">
+      <CustomCursor />
+      <div className="min-h-screen flex flex-col font-sans relative cursor-none">
         <LiveTicker />
         <Navbar />
         <main className="flex-grow">
