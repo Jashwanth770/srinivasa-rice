@@ -12,6 +12,7 @@ const AdminDashboard = () => {
     const [newImage, setNewImage] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [editPrice, setEditPrice] = useState('');
+    const [editName, setEditName] = useState('');
 
     const navigate = useNavigate();
     const token = localStorage.getItem('admin_token');
@@ -101,7 +102,7 @@ const AdminDashboard = () => {
         }
     };
 
-    const handleSaveUpdate = async (id, varietyName) => {
+    const handleSaveUpdate = async (id) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products/update/${id}`, {
                 method: 'PUT',
@@ -110,17 +111,17 @@ const AdminDashboard = () => {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    name: varietyName,
+                    name: editName,
                     new_price_mt: parseFloat(editPrice)
                 })
             });
 
             if (response.ok) {
-                toast.success(`Price updated successfully`);
+                toast.success(`${editName} updated successfully`);
                 setEditingId(null);
                 fetchProducts(); // Auto refresh
             } else {
-                toast.error('Failed to update price');
+                toast.error('Failed to update variety details');
             }
         } catch (error) {
             toast.error('Network error');
@@ -306,8 +307,18 @@ const AdminDashboard = () => {
                                                     </div>
                                                 </td>
                                                 <td className="py-4 px-6 text-sm text-gray-500">#{index + 1}</td>
-                                                <td className="py-4 px-6 text-sm font-medium text-gray-900">{item.variety_name}</td>
-
+                                                <td className="py-4 px-6 text-sm font-medium text-gray-900 border-x border-gray-100">
+                                                    {editingId === item.id ? (
+                                                        <input
+                                                            type="text"
+                                                            value={editName}
+                                                            onChange={(e) => setEditName(e.target.value)}
+                                                            className="w-full min-w-[150px] px-2 py-1 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary shadow-sm"
+                                                        />
+                                                    ) : (
+                                                        item.variety_name
+                                                    )}
+                                                </td>
                                                 {/* Editable Price Column */}
                                                 <td className="py-4 px-6 text-sm">
                                                     {editingId === item.id ? (
@@ -334,9 +345,9 @@ const AdminDashboard = () => {
                                                         {editingId === item.id ? (
                                                             <>
                                                                 <button
-                                                                    onClick={() => handleSaveUpdate(item.id, item.variety_name)}
-                                                                    className="text-green-600 hover:text-green-800 bg-green-50 p-1.5 rounded"
-                                                                    title="Save"
+                                                                    onClick={() => handleSaveUpdate(item.id)}
+                                                                    className="text-green-600 hover:text-green-800 bg-green-50 p-1.5 rounded shadow-sm border border-green-200"
+                                                                    title="Save Changes"
                                                                 >
                                                                     <Check className="w-4 h-4" />
                                                                 </button>
@@ -353,6 +364,7 @@ const AdminDashboard = () => {
                                                                 onClick={() => {
                                                                     setEditingId(item.id);
                                                                     setEditPrice(item.current_price_mt.toString());
+                                                                    setEditName(item.variety_name);
                                                                 }}
                                                                 className="text-blue-600 hover:text-blue-800 bg-blue-50 p-1.5 rounded"
                                                                 title="Edit Details"
