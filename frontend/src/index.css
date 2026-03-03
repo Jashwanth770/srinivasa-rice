@@ -40,12 +40,3 @@ body {
 html {
   scroll-behavior: smooth;
 }
-
-/* Custom Cursor CSS Overrides */
-@media (hover: hover) and (pointer: fine) {
-
-  body,
-  body * {
-    cursor: none !important;
-  }
-}
