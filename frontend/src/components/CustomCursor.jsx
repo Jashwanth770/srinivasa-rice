@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 
 const CustomCursor = () => {
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [ringPosition, setRingPosition] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
+    // Track instant mouse movements
     useEffect(() => {
         const updatePosition = (e) => {
-            setPosition({ x: e.clientX, y: e.clientY });
-            // Only show cursor after first mouse movement to prevent it spawning top-left
+            setMousePosition({ x: e.clientX, y: e.clientY });
             if (!isVisible) setIsVisible(true);
         };
 
         const handleMouseOver = (e) => {
-            // Check if we are hovering over an interactive element (button, link, input)
             const isInteractive = e.target.closest('a, button, input, textarea, [role="button"]');
             setIsHovering(!!isInteractive);
         };
@@ -34,36 +34,64 @@ const CustomCursor = () => {
         };
     }, [isVisible]);
 
-    // Don't render cursor on mobile devices
-    if (typeof window !== 'undefined' && window.innerWidth < 768) return null;
+    // Spring physics for trailing ring
+    useEffect(() => {
+        let animationFrameId;
+        const speed = 0.2; // Adjust for trailing delay tightness
 
-    // Hide until first movement
+        const renderLoop = () => {
+            setRingPosition(prev => {
+                const dx = mousePosition.x - prev.x;
+                const dy = mousePosition.y - prev.y;
+                return {
+                    x: prev.x + dx * speed,
+                    y: prev.y + dy * speed
+                };
+            });
+            animationFrameId = requestAnimationFrame(renderLoop);
+        };
+
+        renderLoop();
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [mousePosition]);
+
+    if (typeof window !== 'undefined' && window.innerWidth < 768) return null;
     if (!isVisible) return null;
 
     return (
-        <div
-            className="fixed pointer-events-none z-[9999] transition-transform duration-150 ease-out"
-            style={{
-                left: `${position.x}px`,
-                top: `${position.y}px`,
-                transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
-            }}
-        >
-            {/* The main glowing orb */}
-            <div className={`
-                w-10 h-10 rounded-full flex items-center justify-center
-                bg-[#8eaaff] bg-opacity-80 backdrop-blur-sm
-                shadow-[0_0_20px_rgba(142,170,255,0.6),inset_0_0_10px_rgba(255,255,255,0.4)]
-                transition-all duration-300 ease-in-out
-                ${isHovering ? 'w-14 h-14 bg-opacity-40 backdrop-blur-md border border-[#8eaaff]' : ''}
-            `}>
-                {/* Center bright dot */}
-                <div className={`
-                    w-2 h-2 rounded-full bg-white shadow-[0_0_8px_white]
-                    transition-all duration-300 ease-in-out
-                    ${isHovering ? 'w-3 h-3 bg-[#8eaaff] shadow-none opacity-50' : ''}
-                `} />
+        <div className="fixed pointer-events-none z-[9999] inset-0">
+            {/* Trailing Outer Halo - Blue/Emerald Portfolio Theme */}
+            <div
+                className="absolute w-10 h-10 rounded-full transform -translate-x-1/2 -translate-y-1/2 will-change-transform shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                style={{
+                    left: `${ringPosition.x}px`,
+                    top: `${ringPosition.y}px`,
+                    background: isHovering
+                        ? 'linear-gradient(to right, rgba(96, 165, 250, 0.2), rgba(52, 211, 153, 0.2))'
+                        : 'transparent',
+                    border: '2px solid',
+                    borderImage: 'linear-gradient(to right, #60A5FA, #34D399) 1',
+                    borderRadius: '50%',
+                    clipPath: 'circle(50% at 50% 50%)', // Enforce circular border image
+                    transition: 'width 0.2s ease-out, height 0.2s ease-out',
+                    width: isHovering ? '60px' : '40px',
+                    height: isHovering ? '60px' : '40px',
+                }}
+            >
+                {/* Inner Border Fallback for cross-browser border-image rounded support */}
+                <div className="absolute inset-0 rounded-full border-2 border-transparent bg-gradient-to-r from-blue-400 to-emerald-400" style={{ WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', WebkitMaskComposite: 'xor', maskComposite: 'exclude', padding: '2px' }}></div>
             </div>
+
+            {/* Instant Inner Dot - Emerald/Blue */}
+            <div
+                className="absolute w-2 h-2 rounded-full transform -translate-x-1/2 -translate-y-1/2 will-change-transform bg-gradient-to-r from-blue-500 to-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                style={{
+                    left: `${mousePosition.x}px`,
+                    top: `${mousePosition.y}px`,
+                    transition: 'opacity 0.2s ease-out',
+                    opacity: isHovering ? 0 : 1 // Hide dot when hovering to focus on ring
+                }}
+            />
         </div>
     );
 };
