@@ -6,7 +6,7 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const navLinks = [
-        { name: 'Home', path: '/home' },
+        { name: 'Home', path: '/' },
         { name: 'About Us', path: '/about' },
         { name: 'Products', path: '/products' },
         { name: 'Market Rates', path: '/market-rates' },
@@ -20,7 +20,7 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20">
                     <div className="flex items-center">
-                        <Link to="/home" className="flex items-center gap-2">
+                        <Link to="/" className="flex items-center gap-2">
                             <img src="/logo.png" alt="Sri Srinivasa" className="h-10 w-auto" />
                             <div className="flex flex-col">
                                 <span className="font-bold text-xl text-secondary leading-tight">Sri Srinivasa</span>
