@@ -21,7 +21,6 @@ const Navbar = () => {
                 <div className="flex justify-between h-20">
                     <div className="flex items-center">
                         <Link to="/" className="flex items-center gap-2">
-                            <img src="/logo.png" alt="Sri Srinivasa" className="h-10 w-auto" />
                             <div className="flex flex-col">
                                 <span className="font-bold text-xl text-secondary leading-tight">Sri Srinivasa</span>
                                 <span className="text-sm font-semibold text-primary tracking-wider leading-tight"> CANVASSING</span>

@@ -10,7 +10,6 @@ const Footer = () => {
                     {/* Brand Info */}
                     <div className="col-span-1 md:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-4">
-                            <img src="/logo.png" alt="Sri Srinivasa" className="h-10 w-auto" />
                             <div className="flex flex-col">
                                 <span className="font-bold text-xl leading-tight">Sri Srinivasa</span>
                                 <span className="text-sm font-semibold text-primary tracking-wider leading-tight">CANVASSING</span>
