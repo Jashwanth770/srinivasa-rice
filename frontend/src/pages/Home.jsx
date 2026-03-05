@@ -53,7 +53,7 @@ const Home = () => {
 
                 <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-48 text-center">
                     <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6 animate-fade-in-up">
-                        Premium <span className="text-primary">Sona Masuri </span> <br /> Sourced Directly from Telangana's Finest Mills
+                        Premium <span className="text-primary">Rice  </span> <br /> Sourced Directly from Telangana's Finest Mills
                     </h1>
                     <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-200 mb-10">
                         Sourcing the finest quality rice from the heartland of India to global markets. Trusted canvassers and merchant exporters.
