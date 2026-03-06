@@ -115,7 +115,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
-        if username is None or username != "manocha1973@gmail.com":
+        if username is None or username != "srinivasulu@srinivascanvassing.com":
             raise credentials_exception
     except jwt.PyJWTError:
         raise credentials_exception
@@ -145,8 +145,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     username = form_data.username.strip().lower()
     password = form_data.password.strip()
     
-    if username == "manocha1973@gmail.com" and password in ["Manocha", "Manocha"]:
-        access_token = jwt.encode({"sub": "manocha1973@gmail.com"}, SECRET_KEY, algorithm=ALGORITHM)
+    if username == "srinivasulu@srinivascanvassing.com" and password in ["Manocha", "Manocha"]:
+        access_token = jwt.encode({"sub": "srinivasulu@srinivascanvassing.com"}, SECRET_KEY, algorithm=ALGORITHM)
         return {"access_token": access_token, "token_type": "bearer"}
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
