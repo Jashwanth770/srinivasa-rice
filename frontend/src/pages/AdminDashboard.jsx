@@ -288,7 +288,11 @@ const AdminDashboard = () => {
                                                 <td className="py-4 px-6 text-sm text-center w-24">
                                                     <div className="relative group w-16 h-16 bg-gray-100 rounded overflow-hidden shadow-inner flex items-center justify-center border border-gray-200 mx-auto">
                                                         {item.image_url ? (
-                                                            <img src={`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${item.image_url}`} alt={item.variety_name} className="w-full h-full object-cover" />
+                                                            <img 
+                                                                src={item.image_url.startsWith('http') ? item.image_url : `${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${item.image_url}`} 
+                                                                alt={item.variety_name} 
+                                                                className="w-full h-full object-cover" 
+                                                            />
                                                         ) : (
                                                             <span className="text-gray-400 text-xs">No img</span>
                                                         )}
