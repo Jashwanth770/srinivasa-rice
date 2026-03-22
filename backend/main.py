@@ -11,6 +11,8 @@ from typing import Optional
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import text
+import cloudinary
+import cloudinary.uploader
 
 from database import engine, Base, get_db
 from models import RicePrice, Lead
@@ -20,6 +22,14 @@ ALGORITHM = "HS256"
 
 # Security scheme
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/admin/login")
+
+# Cloudinary Configuration
+cloudinary.config( 
+    cloud_name = "df948lfrf", 
+    api_key = "748133643683359", 
+    api_secret = "qocSWo8jUw6vCa36QRs7vsRCVtk",
+    secure = True
+)
 
 def init_db():
     Base.metadata.create_all(bind=engine)
@@ -179,15 +189,12 @@ async def add_product(
     image_url = None
     
     if image:
-        file_extension = os.path.splitext(image.filename)[1]
-        timestamp = datetime.datetime.now().strftime("%Y%md%H%M%S")
-        safe_name = "".join([c if c.isalnum() else "_" for c in name]).lower()
-        new_filename = f"{safe_name}_{timestamp}{file_extension}"
-        file_path = os.path.join("uploads", new_filename)
-        
-        with open(file_path, "wb") as buffer:
-            buffer.write(await image.read())
-        image_url = f"uploads/{new_filename}"
+        try:
+            upload_result = cloudinary.uploader.upload(image.file, folder="rice_products")
+            image_url = upload_result.get("secure_url")
+        except Exception as e:
+            print(f"Cloudinary upload failed: {e}")
+            image_url = None
 
     try:
         new_rice = RicePrice(
@@ -221,24 +228,12 @@ async def upload_product_image(
     if not row:
         raise HTTPException(status_code=404, detail="Variety not found")
 
-    file_extension = os.path.splitext(image.filename)[1]
-    timestamp = datetime.datetime.now().strftime("%Y%md%H%M%S")
-    safe_name = "".join([c if c.isalnum() else "_" for c in row.variety_name]).lower()
-    new_filename = f"{safe_name}_{timestamp}{file_extension}"
-    file_path = os.path.join("uploads", new_filename)
-    
-    with open(file_path, "wb") as buffer:
-        buffer.write(await image.read())
-    
-    image_url = f"uploads/{new_filename}"
-    
-    # Optionally delete old image if exists
-    old_image_url = row.image_url
-    if old_image_url and os.path.exists(old_image_url):
-        try:
-            os.remove(old_image_url)
-        except Exception:
-            pass
+    try:
+        upload_result = cloudinary.uploader.upload(image.file, folder="rice_products")
+        image_url = upload_result.get("secure_url")
+    except Exception as e:
+        print(f"Cloudinary upload failed: {e}")
+        raise HTTPException(status_code=500, detail="Image upload failed")
 
     row.image_url = image_url
     db.commit()
