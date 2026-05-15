@@ -1,161 +1,276 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Globe2, ShieldCheck, Box, MessageCircle, Send } from 'lucide-react';
+import { ArrowRight, Globe2, ShieldCheck, Box, MessageCircle, Send, TrendingUp, Award, Truck, Users, Wheat, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import GlassCard from '../components/GlassCard';
+import { countries } from '../data/countries';
 
 const Home = () => {
     const [name, setName] = useState('');
     const [whatsapp, setWhatsapp] = useState('');
+    const [countryCode, setCountryCode] = useState('+91');
     const [loading, setLoading] = useState(false);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/products`);
+                if (res.ok) setProducts(await res.json());
+            } catch (e) { console.error(e); }
+        };
+        fetchProducts();
+    }, []);
 
     const handleSubscribe = async (e) => {
         e.preventDefault();
         setLoading(true);
-
         try {
+            const fullNumber = `${countryCode}${whatsapp}`;
             const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/api/contact`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: name,
-                    company: "Price Alert Subscriber",
-                    whatsapp: whatsapp,
-                    inquiry: "🚨 AUTOMATED LEAD: Subscribed to Daily WhatsApp Price Alerts"
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    name, 
+                    company: "Price Alert Subscriber", 
+                    whatsapp: fullNumber, 
+                    inquiry: `🚨 AUTOMATED LEAD: Subscribed to Daily WhatsApp Price Alerts (Country: ${countryCode})` 
                 })
             });
-
-            if (response.ok) {
-                toast.success('Successfully subscribed to morning price alerts!');
-                setName('');
-                setWhatsapp('');
-            } else {
-                toast.error('Failed to subscribe. Please try again.');
-            }
-        } catch (error) {
-            toast.error('Network error. Please try again later.');
-        } finally {
-            setLoading(false);
-        }
+            if (response.ok) { toast.success('Successfully subscribed to morning price alerts!'); setName(''); setWhatsapp(''); }
+            else toast.error('Failed to subscribe. Please try again.');
+        } catch { toast.error('Network error. Please try again later.'); }
+        finally { setLoading(false); }
     };
 
+    const defaultImages = [
+        "https://images.unsplash.com/photo-1536882240095-0379873feb4e?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1613589973273-fae710ae1ee7?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1568051243851-f9b18bc86134?auto=format&fit=crop&q=80&w=400",
+        "https://images.unsplash.com/photo-1569470984168-3069c9b5fdef?auto=format&fit=crop&q=80&w=400"
+    ];
+
+    const features = [
+        { icon: ShieldCheck, title: 'Certified Quality', desc: 'APEDA & FSSAI certified. Rigorous third-party inspections at every stage.' },
+        { icon: Globe2, title: 'Worldwide Export', desc: 'Krishnapatnam & Chennai ports with efficient global logistics network.' },
+        { icon: Box, title: 'Custom Packaging', desc: '26kg, 50kg PP bags and customizable bulk packaging for importers.' },
+        { icon: Truck, title: 'Fast Logistics', desc: 'Strategic location with direct port connectivity for rapid shipments.' },
+    ];
+
+    const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-50px' }, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } };
+
     return (
-        <div>
-            {/* Hero Section */}
-            <section className="relative bg-secondary overflow-hidden">
-                <div className="absolute inset-0 bg-black/60 z-10"></div>
-                <img
-                    src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80"
-                    alt="Golden Paddy Field"
-                    className="absolute inset-0 w-full h-full object-cover"
-                />
-
-                <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-48 text-center">
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6 animate-fade-in-up">
-                        Premium <span className="text-primary">Rice  </span> <br /> Sourced Directly from Telangana's Finest Mills
-                    </h1>
-                    <p className="mt-4 max-w-2xl mx-auto text-xl text-gray-200 mb-10 animate-fade-in-up delay-100">
-                        Sourcing the finest quality rice from the heartland of India to global markets. Trusted canvassers and merchant exporters.
-                    </p>
-                    <div className="flex justify-center gap-4 animate-fade-in-up delay-200">
-                        <Link
-                            to="/contact"
-                            className="bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-md font-bold text-lg transition-all transform hover:scale-105 shadow-lg flex items-center gap-2"
-                        >
-                            Request Bulk Quote <ArrowRight className="h-5 w-5" />
-                        </Link>
-                        <Link
-                            to="/products"
-                            className="bg-white/10 hover:bg-white/20 border border-white/30 text-white px-8 py-4 rounded-md font-bold text-lg transition-all backdrop-blur-sm"
-                        >
-                            View Products
-                        </Link>
-                    </div>
+        <div className="overflow-hidden bg-background">
+            {/* ═══ HERO SECTION ═══ */}
+            <section className="relative min-h-screen flex items-center justify-center overflow-hidden font-display transition-colors duration-500" id="hero">
+                {/* ═══ BACKGROUND ═══ */}
+                <div className="absolute inset-0 z-0">
+                    <img 
+                        src="https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&q=80" 
+                        alt="Rice Grains Background" 
+                        className="w-full h-full object-cover opacity-30 dark:opacity-40 grayscale-[0.5] dark:grayscale-0"
+                    />
+                    <div className="absolute inset-0 bg-background/40 dark:bg-black/60" />
                 </div>
-            </section>
 
-            {/* WhatsApp Price Alert Lead Magnet */}
-            <section className="bg-green-600 py-16 text-center shadow-xl z-30 relative mx-4 md:mx-auto max-w-5xl rounded-3xl overflow-hidden mt-[-3rem] md:mt-[-5rem] animate-fade-in delay-300">
-                <div className="absolute inset-0 bg-green-700 opacity-20"></div>
-                <div className="relative z-10 px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-center mb-4">
-                        <MessageCircle className="w-12 h-12 text-white animate-bounce shadow-lg rounded-full" />
-                    </div>
-                    <h2 className="text-3xl font-bold text-white mb-4 drop-shadow-md">
-                        Wholesale Rice Prices Change Daily!
-                    </h2>
-                    <p className="text-green-50 text-lg max-w-2xl mx-auto mb-8 font-medium">
-                        Enter your WhatsApp number to get tomorrow's exact CIF/FOB loading rates sent directly to your phone. Never miss a market drop.
-                    </p>
-
-                    <form onSubmit={handleSubscribe} className="max-w-3xl mx-auto flex flex-col md:flex-row gap-4 justify-center items-center">
-                        <input
-                            type="text"
-                            required
-                            placeholder="Your Name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full md:w-64 px-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400/60 placeholder:italic transition-all"
-                        />
-                        <div className="relative w-full md:w-80">
-                            <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 font-bold border-r pr-2 border-gray-300">
-                                WA
+                {/* ═══ CONTENT ═══ */}
+                <div className="relative z-10 max-w-[95vw] lg:max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 text-center mt-[-5vh]">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <h1 className="mb-6 select-none">
+                            <span className="block text-2xl md:text-3xl lg:text-4xl font-bold text-text-main mb-2">
+                                Premium <span className="text-primary">Rice</span>
                             </span>
-                            <input
-                                type="tel"
-                                required
-                                placeholder="WhatsApp Number"
-                                value={whatsapp}
-                                onChange={(e) => setWhatsapp(e.target.value)}
-                                className="w-full pl-16 pr-5 py-4 rounded-xl text-gray-900 bg-white border-2 border-transparent focus:border-green-300 focus:ring-0 outline-none shadow-md font-medium text-lg placeholder-gray-400/60 placeholder:italic transition-all"
-                            />
+                            <span className="block text-3xl md:text-5xl lg:text-[4.8rem] font-black text-text-main w-full mx-auto leading-tight tracking-tight">
+                                Sourced Directly from <br className="hidden lg:block" /> Telangana's Finest Mills
+                            </span>
+                        </h1>
+
+                        <p className="text-sm md:text-base lg:text-lg text-text-muted max-w-3xl mx-auto mb-10 font-bold leading-relaxed">
+                            Sourcing the finest quality rice from the heartland of India to <br className="hidden md:block" /> 
+                            global markets. Trusted canvassers and merchant exporters.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
+                            <Link to="/contact" className="button-primary w-full sm:w-auto">
+                                Request Bulk Quote <ArrowRight className="w-5 h-5" />
+                            </Link>
+                            <Link to="/products" className="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-border bg-card text-text-main font-bold hover:border-primary transition-all">
+                                View Products
+                            </Link>
                         </div>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full md:w-auto px-8 py-4 bg-gray-900 hover:bg-black text-white rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all transform hover:scale-105 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                        >
-                            {loading ? 'Subscribing...' : (
-                                <>Get Alerts <Send className="w-5 h-5" /></>
-                            )}
-                        </button>
-                    </form>
-                    <p className="text-green-100 text-xs mt-4">100% Free. No spam. Unsubscribe anytime.</p>
+                    </motion.div>
                 </div>
             </section>
 
-            {/* Features/Highlights Section */}
-            <section className="py-20 bg-background text-center">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 className="text-3xl font-bold text-secondary mb-16">Global Shipping Capabilities</h2>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                        <div className="flex flex-col items-center group cursor-pointer hover:-translate-y-2 hover:shadow-xl p-6 rounded-2xl transition-all duration-300 bg-white shadow-sm border border-gray-50">
-                            <div className="h-20 w-20 bg-gray-50 rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
-                                <Globe2 className="h-10 w-10 text-primary group-hover:text-white" />
-                            </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Worldwide Export</h3>
-                            <p className="text-text-muted">Efficient logistics network connecting Krishnapatnam and Chennai ports to international destinations.</p>
+            {/* ═══ WHATSAPP PRICE ALERT ═══ */}
+            <section className="py-20 px-4">
+                <motion.div {...fadeUp} className="max-w-6xl mx-auto relative overflow-hidden rounded-3xl premium-card !bg-primary/5 border-primary/10">
+                    <div className="relative z-10 px-6 sm:px-10 py-16 text-center">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-black mb-6 uppercase tracking-widest">
+                            <MessageCircle className="w-4 h-4" /> Live Market Feed
                         </div>
-
-                        <div className="flex flex-col items-center group cursor-pointer hover:-translate-y-2 hover:shadow-xl p-6 rounded-2xl transition-all duration-300 bg-white shadow-sm border border-gray-50">
-                            <div className="h-20 w-20 bg-gray-50 rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
-                                <ShieldCheck className="h-10 w-10 text-primary group-hover:text-white" />
+                        <h2 className="text-3xl md:text-5xl font-display font-black text-text-main mb-4 leading-tight">Wholesale Prices Change Daily!</h2>
+                        <p className="text-text-muted text-lg max-w-2xl mx-auto mb-10 font-bold">Get tomorrow's exact CIF/FOB loading rates sent directly to your WhatsApp. Never miss a market drop.</p>
+                        
+                        <form onSubmit={handleSubscribe} className="max-w-4xl mx-auto flex flex-col lg:flex-row gap-3 justify-center items-stretch">
+                            <input 
+                                type="text" 
+                                required 
+                                placeholder="Your Name" 
+                                value={name} 
+                                onChange={(e) => setName(e.target.value)} 
+                                className="input-premium lg:w-48 !bg-black/20" 
+                            />
+                            <div className="flex flex-row gap-2 lg:flex-grow">
+                                <div className="relative w-24 sm:w-32 shrink-0">
+                                    <select 
+                                        value={countryCode}
+                                        onChange={(e) => setCountryCode(e.target.value)}
+                                        className="input-premium h-full pl-4 pr-8 py-4 !bg-black/20 font-black cursor-pointer appearance-none text-sm"
+                                    >
+                                        {countries.map((c) => (
+                                            <option key={`${c.name}-${c.code}`} value={c.code} className="bg-secondary text-white">
+                                                {c.flag} {c.code}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <ChevronRight className="w-4 h-4 text-primary rotate-90" />
+                                    </div>
+                                </div>
+                                <input 
+                                    type="tel" 
+                                    required 
+                                    placeholder="WhatsApp Number" 
+                                    value={whatsapp} 
+                                    onChange={(e) => setWhatsapp(e.target.value)} 
+                                    className="input-premium flex-grow min-w-[200px] !bg-black/20" 
+                                />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Certified Quality</h3>
-                            <p className="text-text-muted">Rigorous third-party inspections and APEDA & FSSAI certified milling partners ensure premium quality.</p>
-                        </div>
+                            <button type="submit" disabled={loading} className="button-primary lg:w-48 shrink-0">
+                                {loading ? '...' : <><span>Get Alerts</span><Send className="w-4 h-4" /></>}
+                            </button>
+                        </form>
+                    </div>
+                </motion.div>
+            </section>
 
-                        <div className="flex flex-col items-center group cursor-pointer hover:-translate-y-2 hover:shadow-xl p-6 rounded-2xl transition-all duration-300 bg-white shadow-sm border border-gray-50">
-                            <div className="h-20 w-20 bg-gray-50 rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-white transition-all">
-                                <Box className="h-10 w-10 text-primary group-hover:text-white" />
+            {/* ═══ PRODUCT SHOWCASE ═══ */}
+            <section className="py-20 px-4 bg-secondary-bg" id="product-showcase">
+                <div className="max-w-7xl mx-auto">
+                    <motion.div {...fadeUp} className="text-center mb-16">
+                        <h2 className="text-4xl md:text-5xl font-display font-black text-text-main mb-4">Premium Rice Catalog</h2>
+                        <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6" />
+                        <p className="text-text-muted text-lg max-w-2xl mx-auto font-bold">Sourced directly from certified millers in Miryalaguda. Available in bulk quantities for immediate export.</p>
+                    </motion.div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {(products.length > 0 ? products.slice(0, 8) : []).map((product, i) => (
+                            <div key={product.id} className="premium-card group overflow-hidden flex flex-col">
+                                <div className="h-56 overflow-hidden relative">
+                                    <img src={product.image_url ? (product.image_url.startsWith('http') ? product.image_url : `${import.meta.env.VITE_API_URL || 'https://srinivasa-rice.onrender.com'}/${product.image_url}`) : defaultImages[i % defaultImages.length]} alt={product.variety_name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                                    <div className="absolute bottom-4 left-4 px-4 py-2 rounded-xl bg-background/90 backdrop-blur-md text-primary text-sm font-black shadow-xl">₹{product.current_price_mt}/MT</div>
+                                </div>
+                                <div className="p-6 flex-grow flex flex-col">
+                                    <h3 className="font-display font-black text-xl text-text-main mb-3">{product.variety_name}</h3>
+                                    <p className="text-text-muted text-sm mb-6 line-clamp-2 font-bold">Premium export quality with rigorous QC testing. Contact for technical specifications.</p>
+                                    <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
+                                        <Link to="/contact" className="text-primary font-black text-sm hover:underline flex items-center gap-1">
+                                            Request Quote <ArrowRight className="w-4 h-4" />
+                                        </Link>
+                                        <span className="text-[10px] uppercase tracking-widest text-text-muted font-black">Export Grade</span>
+                                    </div>
+                                </div>
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Custom Packaging</h3>
-                            <p className="text-text-muted">Available in 26kg, 50kg PP bags and customizable bulk packaging tailored to importer requirements.</p>
-                        </div>
+                        ))}
                     </div>
                 </div>
+            </section>
+
+            {/* ═══ WHY CHOOSE US ═══ */}
+            <section className="py-24 px-4 bg-background" id="why-choose-us">
+                <div className="max-w-7xl mx-auto">
+                    <motion.div {...fadeUp} className="text-center mb-20">
+                        <h2 className="text-4xl md:text-5xl font-display font-black text-text-main mb-4">Industrial Excellence</h2>
+                        <div className="w-20 h-1.5 bg-primary mx-auto rounded-full mb-6" />
+                        <p className="text-text-muted text-lg max-w-2xl mx-auto font-bold">Decades of expertise in rice canvassing and global export logistics.</p>
+                    </motion.div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {features.map((f, i) => (
+                            <div key={f.title} className="premium-card !p-8 group hover:border-primary transition-colors">
+                                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                    <f.icon className="w-8 h-8 text-primary group-hover:text-white" />
+                                </div>
+                                <h3 className="font-display font-black text-xl text-text-main mb-4">{f.title}</h3>
+                                <p className="text-text-muted font-bold leading-relaxed">{f.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══ MARKET INTELLIGENCE PREVIEW ═══ */}
+            <section className="py-24 px-4 bg-secondary-bg" id="market-preview">
+                <div className="max-w-7xl mx-auto">
+                    <div className="flex flex-col lg:flex-row items-end justify-between gap-6 mb-16">
+                        <motion.div {...fadeUp} className="text-left">
+                            <h2 className="text-4xl md:text-5xl font-display font-black text-text-main mb-4">Market Intelligence</h2>
+                            <div className="w-20 h-1.5 bg-primary rounded-full mb-6" />
+                            <p className="text-text-muted text-lg max-w-2xl font-bold">Stay ahead with real-time pricing from Miryalaguda's rice market.</p>
+                        </motion.div>
+                        <Link to="/market-rates" className="button-primary !py-3 !px-6 text-sm">
+                            View Full Dashboard
+                        </Link>
+                    </div>
+                    
+                    <motion.div {...fadeUp} className="premium-card overflow-hidden !p-0">
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="bg-background text-text-main text-xs uppercase tracking-[0.2em]">
+                                        <th className="py-6 px-8 font-black">Rice Variety</th>
+                                        <th className="py-6 px-8 font-black">Price (₹/MT)</th>
+                                        <th className="py-6 px-8 font-black text-center">Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border">
+                                    {products.slice(0, 5).map((item, i) => (
+                                        <tr key={item.id} className="hover:bg-primary/5 transition-colors">
+                                            <td className="py-6 px-8 font-black text-text-main">{item.variety_name}</td>
+                                            <td className="py-6 px-8 font-black text-2xl text-primary">₹{item.current_price_mt.toFixed(0)}</td>
+                                            <td className="py-6 px-8 text-center">
+                                                <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest ${item.trend === 'up' ? 'bg-emerald-500/10 text-emerald-500' : item.trend === 'down' ? 'bg-red-500/10 text-red-500' : 'bg-text-muted/10 text-text-muted'}`}>
+                                                    {item.trend === 'up' ? <TrendingUp className="w-4 h-4" /> : item.trend === 'down' ? '▼' : '—'} {item.percentage_change}%
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* ═══ FINAL CTA ═══ */}
+            <section className="py-24 px-4 bg-background">
+                <motion.div {...fadeUp} className="max-w-6xl mx-auto text-center relative overflow-hidden rounded-[3rem] border border-border shadow-2xl">
+                    <div className="absolute inset-0 bg-primary/5" />
+                    <div className="relative z-10 py-20 px-6 sm:px-12">
+                        <h2 className="text-4xl md:text-6xl font-display font-black text-text-main mb-6">Start Your Export <br /> Journey Today</h2>
+                        <p className="text-text-muted text-xl max-w-2xl mx-auto mb-12 font-bold leading-relaxed">Connect with us for competitive pricing, certified quality rice, and hassle-free export logistics from India.</p>
+                        <div className="flex flex-col sm:flex-row justify-center gap-6">
+                            <Link to="/contact" className="button-primary !text-xl !px-12 !py-5">Get Started Now</Link>
+                            <a href="https://wa.me/919866760028" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-3 px-12 py-5 rounded-xl border-2 border-primary text-primary font-black text-xl hover:bg-primary/10 transition-all">
+                                <MessageCircle className="w-6 h-6" /> WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </motion.div>
             </section>
         </div>
     );

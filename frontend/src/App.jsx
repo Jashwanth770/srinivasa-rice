@@ -1,54 +1,95 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LiveTicker from './components/LiveTicker';
 import Home from './pages/Home';
-import About from './pages/About';
-import Products from './pages/Products';
-import Packaging from './pages/Packaging';
-import Certifications from './pages/Certifications';
-import Contact from './pages/Contact';
-import Legal from './pages/Legal';
-import MarketDashboard from './pages/MarketDashboard';
+import MobileNav from './components/MobileNav';
 
 import { Toaster } from 'react-hot-toast';
-import AdminLogin from './pages/AdminLogin';
-import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import WhatsAppWidget from './components/WhatsAppWidget';
 import ScrollToTop from './components/ScrollToTop';
 
+// Lazy loaded pages for code splitting
+const About = lazy(() => import('./pages/About'));
+const Products = lazy(() => import('./pages/Products'));
+const Packaging = lazy(() => import('./pages/Packaging'));
+const Certifications = lazy(() => import('./pages/Certifications'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Legal = lazy(() => import('./pages/Legal'));
+const MarketDashboard = lazy(() => import('./pages/MarketDashboard'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const WhatsAppCRM = lazy(() => import('./pages/WhatsAppCRM'));
+const DigitalCard = lazy(() => import('./pages/DigitalCard'));
+const CardEditor = lazy(() => import('./pages/CardEditor'));
+
+// Loading fallback
+const PageLoader = () => (
+    <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+            <p className="text-sm text-text-muted font-medium">Loading...</p>
+        </div>
+    </div>
+);
+
 function App() {
-  return (
-    <Router>
-      <ScrollToTop />
-      <Toaster position="top-right" />
-      <div className="min-h-screen flex flex-col font-sans relative">
-        <LiveTicker />
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/packaging" element={<Packaging />} />
-            <Route path="/certifications" element={<Certifications />} />
-            <Route path="/market-rates" element={<MarketDashboard />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/legal" element={<Legal />} />
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <AdminDashboard />
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </main>
-        <WhatsAppWidget />
-        <Footer />
-      </div>
-    </Router>
-  );
+    return (
+        <Router>
+            <ScrollToTop />
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    style: {
+                        borderRadius: '12px',
+                        background: 'var(--glass-bg)',
+                        backdropFilter: 'blur(16px)',
+                        color: 'inherit',
+                        border: '1px solid var(--glass-border)',
+                    },
+                }}
+            />
+            <Routes>
+                {/* ── Standalone: Digital Card (no Navbar/Footer) ── */}
+                <Route path="/card/:slug" element={
+                    <Suspense fallback={<PageLoader />}>
+                        <DigitalCard />
+                    </Suspense>
+                } />
+
+                {/* ── Full layout: all other pages ── */}
+                <Route path="*" element={
+                    <div className="min-h-screen flex flex-col font-sans relative">
+                        <LiveTicker />
+                        <Navbar />
+                        <main className="flex-grow pb-16 lg:pb-0">
+                            <Suspense fallback={<PageLoader />}>
+                                <Routes>
+                                    <Route path="/" element={<Home />} />
+                                    <Route path="/about" element={<About />} />
+                                    <Route path="/products" element={<Products />} />
+                                    <Route path="/packaging" element={<Packaging />} />
+                                    <Route path="/certifications" element={<Certifications />} />
+                                    <Route path="/market-rates" element={<MarketDashboard />} />
+                                    <Route path="/contact" element={<Contact />} />
+                                    <Route path="/legal" element={<Legal />} />
+                                    <Route path="/admin/login" element={<AdminLogin />} />
+                                    <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                                    <Route path="/admin/crm" element={<ProtectedRoute><WhatsAppCRM /></ProtectedRoute>} />
+                                    <Route path="/admin/cards" element={<ProtectedRoute><CardEditor /></ProtectedRoute>} />
+                                </Routes>
+                            </Suspense>
+                        </main>
+                        <WhatsAppWidget />
+                        <MobileNav />
+                        <Footer />
+                    </div>
+                } />
+            </Routes>
+        </Router>
+    );
 }
 
 export default App;

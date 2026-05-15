@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://srinivasa-rice.vercel.app/sitemap.xml
+
+# Block admin pages from crawling
+User-agent: *
+Disallow: /admin
+Disallow: /admin/
